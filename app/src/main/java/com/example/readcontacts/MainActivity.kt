@@ -29,8 +29,32 @@ class MainActivity : AppCompatActivity() {
         if (permissionGranted) {
             requestContacts()
         } else {
-            Log.d("MainActivity", "Permission denied")
+            requestPermission()
         }
+    }
+
+    private fun requestPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(android.Manifest.permission.READ_CONTACTS),
+            READ_CONTACT_RC
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == READ_CONTACT_RC && grantResults.isNotEmpty()) {
+            val permissionGranted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+            if (permissionGranted) {
+                requestContacts()
+            } else {
+                Log.d("MainActivity", "Permission Dinied")
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun requestContacts() {
@@ -57,4 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        private const val READ_CONTACT_RC = 100
+    }
 }
